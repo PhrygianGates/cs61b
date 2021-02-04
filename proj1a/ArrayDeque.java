@@ -20,7 +20,7 @@ public class ArrayDeque<T> {
     }
 
     public ArrayDeque() {
-        items = (T[])new Object[8];
+        items = (T[]) new Object[8];
         start = end = size = 0;
         capacity = 8;
     }
@@ -50,12 +50,12 @@ public class ArrayDeque<T> {
         T[] temp;
         if (size == capacity) {
             temp = (T[]) new Object[capacity * 2];
-        }else if (size < capacity / 4) {
+        } else if (size < capacity / 4) {
             temp = (T[]) new Object[capacity / 2];
-        }else {
+        } else {
             return;
         }
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             temp[i] = items[start];
             start = next(start);
         }
@@ -64,7 +64,7 @@ public class ArrayDeque<T> {
         items = temp;
         if (size == capacity) {
             capacity *= 2;
-        }else if (size < capacity / 4) {
+        } else if (size < capacity / 4) {
             capacity /= 2;
         }
     }
@@ -97,7 +97,7 @@ public class ArrayDeque<T> {
     }
     public void printDeque() {
         int j = start;
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             System.out.print(items[j]);
             j = next(j);
         }
