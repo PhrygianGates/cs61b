@@ -4,21 +4,31 @@ public class ArrayDeque<T> {
     private int start;
     private int end;
     private T[] items;
+    private int next(int n) {
+        n++;
+        if (n == capacity) {
+            n = 0;
+        }
+        return n;
+    }
+    private int previous(int n) {
+        n--;
+        if (n == -1) {
+            n = capacity - 1;
+        }
+        return n;
+    }
 
     public ArrayDeque() {
         items = (T[])new Object[8];
         start = end = size = 0;
         capacity = 8;
-
     }
     public void addFirst(T item) {
         if (size == capacity) {
             resize();
         }
-        start--;
-        if (start == -1) {
-            start = capacity - 1;
-        }
+        start = previous(start);
         items[start] = item;
         size++;
     }
@@ -26,11 +36,8 @@ public class ArrayDeque<T> {
         if (size == capacity) {
             resize();
         }
-        end++;
-        if (end == capacity) {
-            end = 0;
-        }
-        items[end] = item;
+        end = next(end);
+        items[previous(end)] = item;
         size++;
     }
     public boolean isEmpty() {
@@ -48,31 +55,23 @@ public class ArrayDeque<T> {
         }else {
             return;
         }
-        int i = 0, j = 0;
-        if (start != 0) {
-            for(i = 0; i < capacity - start; i++) {
-                temp[i] = items[i + start];
-            }
-        }
-        for(j = 0; j < end; j++) {
-            temp[j + i + 1] = items[j];
-        }
-        if (size == capacity) {
-            capacity *= 2;
-        }else {
-            capacity /= 2;
+        for(int i = 0; i < size; i++) {
+            temp[i] = items[start];
+            start = next(start);
         }
         start = 0;
-        end = j + i + 1;
+        end = size;
         items = temp;
+        if (size == capacity) {
+            capacity *= 2;
+        }else if (size < capacity / 4) {
+            capacity /= 2;
+        }
     }
     public T removeFirst() {
         if (size > 0) {
             T temp = items[start];
-            start++;
-            if (start == capacity) {
-                start = 0;
-            }
+            start = next(start);
             size--;
             if (size < capacity / 4) {
                 resize();
@@ -84,10 +83,7 @@ public class ArrayDeque<T> {
     public T removeLast() {
         if (size > 0) {
             T temp = items[end];
-            end--;
-            if (end == -1) {
-                end = capacity - 1;
-            }
+            end = previous(end);
             size--;
             if (size < capacity / 4) {
                 resize();
@@ -100,14 +96,10 @@ public class ArrayDeque<T> {
         return items[(start + index) % capacity];
     }
     public void printDeque() {
-        int i = 0, j = 0;
-        if (start != 0) {
-            for(i = 0; i < capacity - start; i++) {
-                System.out.print(items[i + start]);
-            }
-        }
-        for(j = 0; j < end; j++) {
+        int j = start;
+        for(int i = 0; i < size; i++) {
             System.out.print(items[j]);
+            j = next(j);
         }
     }
 }

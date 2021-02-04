@@ -1,6 +1,7 @@
 /** Performs some basic linked list tests. */
+
 public class LinkedListDequeTest {
-	
+
 	/* Utility method for printing out empty checks. */
 	public static boolean checkEmpty(boolean expected, boolean actual) {
 		if (expected != actual) {
@@ -84,9 +85,29 @@ public class LinkedListDequeTest {
 
 	}
 
+	public static void getRecursiveTest() {
+		LinkedListDeque<Integer> lld = new LinkedListDeque<>();
+		lld.addLast(0);
+		lld.addLast(1);
+		lld.addLast(2);
+		System.out.println(lld.getRecursive(3));
+	}
+	public static void ArraygetaddTest() {
+		ArrayDeque<Integer> lld = new ArrayDeque<>();
+		for(int i = 0; i < 100; i++) {
+			lld.addLast(i);
+		}
+		for(int i = 0; i < 50; i++) {
+			lld.removeFirst();
+		}
+		System.out.println(lld.get(0));
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
-		addIsEmptySizeTest();
-		addRemoveTest();
+		//addIsEmptySizeTest();
+		//addRemoveTest();
+		//getRecursiveTest();
+		ArraygetaddTest();
 	}
 } 
