@@ -92,15 +92,15 @@ public class LinkedListDequeTest {
 		lld.addLast(2);
 		System.out.println(lld.getRecursive(3));
 	}
-	public static void ArraygetaddTest() {
+	public static void getaddTest() {
 		ArrayDeque<Integer> lld = new ArrayDeque<>();
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 9; i++) {
 			lld.addLast(i);
 		}
-		for(int i = 0; i < 50; i++) {
-			lld.removeFirst();
+		for(int i = 0; i < 8; i++) {
+			lld.removeLast();
 		}
-		System.out.println(lld.get(0));
+		System.out.println(lld.removeLast());
 	}
 
 	public static void main(String[] args) {
@@ -108,6 +108,6 @@ public class LinkedListDequeTest {
 		//addIsEmptySizeTest();
 		//addRemoveTest();
 		//getRecursiveTest();
-		ArraygetaddTest();
+		getaddTest();
 	}
 } 

@@ -82,8 +82,8 @@ public class ArrayDeque<T> {
     }
     public T removeLast() {
         if (size > 0) {
-            T temp = items[end];
             end = previous(end);
+            T temp = items[end];
             size--;
             if (size < capacity / 4) {
                 resize();

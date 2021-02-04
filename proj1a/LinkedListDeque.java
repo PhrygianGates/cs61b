@@ -63,7 +63,7 @@ public class LinkedListDeque<T> {
         return size == 0;
     }
     public T get(int index) {
-        if (index > 0 && index < size) {
+        if (index >= 0 && index < size) {
             int i = 0;
             Node curr = sentinel;
             while (i <= index) {
