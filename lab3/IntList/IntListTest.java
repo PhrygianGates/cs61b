@@ -10,7 +10,7 @@ public class IntListTest {
      * assertEquals knows how to handle IntLists just fine.
      */
 
-    @Test
+
     public void testList() {
         IntList one = new IntList(1, null);
         IntList twoOne = new IntList(2, one);
@@ -20,7 +20,6 @@ public class IntListTest {
         assertEquals(threeTwoOne, x);
     }
 
-    @Test
     public void testdSquareList() {
         IntList L = IntList.of(1, 2, 3);
         IntList.dSquareList(L);
@@ -40,7 +39,7 @@ public class IntListTest {
      * Anything can happen to A.
      */
 
-    @Test
+
     public void testSquareListRecursive() {
         IntList L = IntList.of(1, 2, 3);
         IntList res = IntList.squareListRecursive(L);
@@ -48,7 +47,7 @@ public class IntListTest {
         assertEquals(IntList.of(1, 4, 9), res);
     }
 
-    @Test
+
     public void testDcatenate() {
         IntList A = IntList.of(1, 2, 3);
         IntList B = IntList.of(4, 5, 6);
@@ -57,7 +56,7 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3, 4, 5, 6), A);
     }
 
-    @Test
+
     public void testCatenate() {
         IntList A = IntList.of(1, 2, 3);
         IntList B = IntList.of(4, 5, 6);
@@ -69,5 +68,13 @@ public class IntListTest {
     /** If you're running this from the command line, you'll need
       * to add a main method. See ArithmeticTest.java for an
       * example. */
-
+    @Test
+    public void testReverse() {
+        IntList A = IntList.of(1, 2, 3);
+        IntList init =IntList.of(1, 2, 3);
+        IntList exp = IntList.of(3, 2, 1);
+        assertEquals(exp,IntList.reverse(A));
+        assertNotEquals(init,A);
+        assertEquals(null,IntList.reverse(null));
+    }
 }
