@@ -14,31 +14,31 @@ public class PercolationStats {
         }
         return  (percolation.openNum * 1.0) / (n * n);
     }
-    public PercolationStats(int N, int T, PercolationFactory pf) {  // perform T independent experiments on an N-by-N grid
+    public PercolationStats(int N, int T, PercolationFactory pf) {
         double[] data = new double[T];
-        Percolation percolation = pf.make(N);
         for (int i = 0; i < T; i++) {
+            Percolation percolation = pf.make(N);
             data[i] = experiment(percolation);
         }
         mean = StdStats.mean(data);
         stddev = StdStats.stddev(data);
         this.T = T;
     }
-    public double mean() {                                          // sample mean of percolation threshold
+    public double mean() {
         return mean;
     }
-    public double stddev() {                                        // sample standard deviation of percolation threshold
+    public double stddev() {
         return stddev;
     }
-    public double confidenceLow() {                                 // low endpoint of 95% confidence interval
+    public double confidenceLow() {
         return mean - 1.96 * stddev / Math.sqrt(T);
     }
-    public double confidenceHigh() {                                // high endpoint of 95% confidence interval
+    public double confidenceHigh() {
         return mean + 1.96 * stddev / Math.sqrt(T);
     }
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         PercolationFactory pf = new PercolationFactory();
-        PercolationStats test = new PercolationStats(800, 10000, pf);
+        PercolationStats test = new PercolationStats(400, 100, pf);
         System.out.println(test.mean());
         System.out.println(test.stddev());
         System.out.println(test.confidenceLow() + "," + test.confidenceHigh());

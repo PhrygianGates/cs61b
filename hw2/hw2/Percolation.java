@@ -4,12 +4,15 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     boolean[][] grid;
-    WeightedQuickUnionUF Dset;
+    WeightedQuickUnionUF dSet;
     int top, bottom, openNum;
 
     public Percolation(int N) {              // create N-by-N grid, with all sites initially blocked
+        if (N <= 0) {
+            throw new IllegalArgumentException();
+        }
         grid = new boolean[N][N];
-        Dset = new WeightedQuickUnionUF(N * N + 2);
+        dSet = new WeightedQuickUnionUF(N * N + 2);
         top = N * N;
         bottom = N * N + 1;
         openNum = 0;
@@ -21,23 +24,23 @@ public class Percolation {
         grid[row][col] = true;
         openNum += 1;
         if (row == 0) {
-            Dset.union(top, toInt(row, col));
+            dSet.union(top, toInt(row, col));
         }
         if (row == grid.length - 1) {
-            Dset.union(bottom, toInt(row, col));
+            dSet.union(bottom, toInt(row, col));
         }
         //for this one's neighbors
         if (col != 0 && isOpen(row, col - 1)) {
-            Dset.union(toInt(row, col), toInt(row, col - 1));
+            dSet.union(toInt(row, col), toInt(row, col - 1));
         }
         if (col != grid.length - 1 && isOpen(row, col + 1)) {
-            Dset.union(toInt(row, col), toInt(row, col + 1));
+            dSet.union(toInt(row, col), toInt(row, col + 1));
         }
         if (row != 0 && isOpen(row - 1, col)) {
-            Dset.union(toInt(row, col), toInt(row - 1, col));
+            dSet.union(toInt(row, col), toInt(row - 1, col));
         }
         if (row != grid.length - 1 && isOpen(row + 1, col)) {
-            Dset.union(toInt(row, col), toInt(row + 1, col));
+            dSet.union(toInt(row, col), toInt(row + 1, col));
         }
     }
     public boolean isOpen(int row, int col) { // is the site (row, col) open?
@@ -50,13 +53,13 @@ public class Percolation {
     }
     public boolean isFull(int row, int col) {  // is the site (row, col) full?
         int num = toInt(row, col);
-        return Dset.connected(num, top);
+        return dSet.connected(num, top);
     }
     public int numberOfOpenSites() {          // number of open sites
         return openNum;
     }
     public boolean percolates() {             // does the system percolate?
-        return Dset.connected(top, bottom);
+        return dSet.connected(top, bottom);
     }
     public static void main(String[] args) {  // use for unit testing (not required)
         Percolation percolation = new Percolation(4);
