@@ -127,6 +127,39 @@ public class TestMyHashMap {
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
 
+    //test the keyset method
+    //@Test
+    public void keySetTest() {
+        MyHashMap<String, String> dictionary = new MyHashMap<>();
+        dictionary.put("hello", "world");
+        dictionary.put("hello", "kevin");
+        dictionary.put("spring", "hi");
+        for (String x : dictionary.keySet()) {
+            System.out.println(x);
+        }
+    }
+
+    //@Test
+    public void removeTest() {
+        MyHashMap<String, String> dictionary = new MyHashMap<>();
+        dictionary.put("spring", "hi");
+        dictionary.put("hello", "world");
+        assertEquals(2, dictionary.size());
+        dictionary.remove("hello", "hello");
+        assertEquals(2, dictionary.size());
+        dictionary.remove("hello", "world");
+        assertEquals(1, dictionary.size());
+    }
+
+    @Test
+    public void resizeTest() {
+        MyHashMap<Integer, Integer> dictionary = new MyHashMap<>();
+        for(int i = 0; i < 100; i++) {
+            dictionary.put(i, i);
+        }
+        assertEquals(100, dictionary.size());
+    }
+
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
     }
