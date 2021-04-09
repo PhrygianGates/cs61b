@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import edu.princeton.cs.algs4.Queue;
 
 public class Board implements WorldState {
-    int[] content;
-    int size;
+    private int[] content;
+    private int size;
     public Board(int[][] tiles) {
         size = tiles.length;
         content = new int[size * size];
@@ -68,11 +68,22 @@ public class Board implements WorldState {
         }
         return count;
     }
+    private int manhattanDistance (int s, int t) {
+        s -= 1;
+        t -= 1;
+        int sx = s / size;
+        int sy = s % size;
+        int tx = t / size;
+        int ty = t % size;
+        return Math.abs(sx - tx) + Math.abs(sy - ty);
+    }
     public int manhattan() {
         int count = 0;
         int i = 0;
-        for (i = 0; i < size * size - 1; i++) {
-            count += Math.abs(content[i] - i - 1);
+        for (i = 0; i < size * size; i++) {
+            if (content[i] != 0) {
+                count += manhattanDistance(content[i],i + 1);
+            }
         }
         return count;
     }
@@ -84,6 +95,9 @@ public class Board implements WorldState {
             throw new IllegalArgumentException();
         }
         Board o = (Board) y;
+        if (size != o.size) {
+            return false;
+        }
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (tileAt(i, j) != o.tileAt(i, j)) {
