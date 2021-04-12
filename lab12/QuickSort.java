@@ -48,12 +48,54 @@ public class QuickSort {
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
         // Your code here!
+        for (Item item : unsorted) {
+            if (item.compareTo(pivot) < 0) {
+                less.enqueue(item);
+            } else if (item.compareTo(pivot) > 0) {
+                greater.enqueue(item);
+            } else {
+                equal.enqueue(item);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        //System.out.println("to sort: " + items);
+        if (items.size() <= 1) {
+            //System.out.println("return single: " + items);
+            return items;
+        } else {
+            Queue<Item> less = new Queue<>();
+            Queue<Item> equal = new Queue<>();
+            Queue<Item> greater = new Queue<>();
+            Item pivot = getRandomItem(items);
+            //System.out.println("pivot: " + pivot);
+            partition(items, pivot, less, equal, greater);
+            less = quickSort(less);
+            greater = quickSort(greater);
+            Queue<Item> sorted = catenate(less, equal);
+            sorted = catenate(sorted, greater);
+            //System.out.println("return sorted: " + sorted);
+            return sorted;
+        }
+    }
+    public static void main(String[] args) {
+        Queue<Integer> students = new Queue<>();
+        students.enqueue(2);
+        students.enqueue(5);
+        students.enqueue(9);
+        students.enqueue(1);
+        students.enqueue(7);
+        students.enqueue(6);
+        students.enqueue(4);
+        students.enqueue(3);
+        students.enqueue(8);
+        System.out.println("original queue: " + students);
+        Queue<Integer> students2 = quickSort(students);
+        System.out.println("sorted queue: " + students2);
+        System.out.println(students.size() == students2.size());
     }
 }
