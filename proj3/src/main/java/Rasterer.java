@@ -8,9 +8,11 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
+    double stdlonDPP;
 
     public Rasterer() {
         // YOUR CODE HERE
+        stdlonDPP = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / MapServer.TILE_SIZE;
     }
 
     /**
@@ -42,11 +44,84 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
+        System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+        double ullon = params.get("ullon"), ullat = params.get("ullat"),
+                lrlon = params.get("lrlon"), lrlat = params.get("lrlat"),
+                height = params.get("h"), width = params.get("w");
+        if (lrlat >= ullat || lrlon <= ullon
+                || lrlat >= MapServer.ROOT_ULLAT || lrlon <= MapServer.ROOT_ULLON
+                || ullat <= MapServer.ROOT_LRLAT || ullon >= MapServer.ROOT_LRLON) {
+            results.put("query_success", false);
+            System.out.println(results);
+            return results;
+        }
+        double lonDPP = (lrlon - ullon) / width;
+        System.out.println("lonDPP:" + lonDPP);
+        System.out.println("stdlonDPP:" + stdlonDPP);
+        int depth = 0;
+        while (lonDPP < stdlonDPP && depth < 7) {
+            depth += 1;
+            lonDPP *= 2;
+        }
+        int x1 = getX(depth, ullon), y1 = getY(depth, ullat),
+                x2 = getX(depth, lrlon), y2 = getY(depth, lrlat);
+        String[][] files = new String[y2 - y1 + 1][x2 - x1 + 1];
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                files[j - y1][i - x1] = "d" + depth + "_x" + i + "_y" + j + ".png";
+            }
+        }
+        for (int i = 0; i < files.length; i++) {
+            for (int j = 0; j < files[0].length; j++) {
+                System.out.print(files[i][j] + " ");
+            }
+            System.out.print("\n");
+        }
+        results.put("render_grid", files);
+        results.put("raster_ul_lon", getullon(depth, x1));
+        results.put("raster_ul_lat", getullat(depth, y1));
+        results.put("raster_lr_lon", getlrlon(depth, x2));
+        results.put("raster_lr_lat", getlrlat(depth, y2));
+        results.put("depth", depth);
+        results.put("query_success", true);
+        System.out.println(results);
         return results;
     }
-
+    private int getX(int depth, double lon) {
+        int t = 0;
+        double inteval = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / (1 << depth);
+        double curr = MapServer.ROOT_ULLON;
+        while (curr < lon && curr <= MapServer.ROOT_LRLON - inteval) {
+            curr += inteval;
+            t += 1;
+        }
+        return Math.max(t - 1, 0);
+    }
+    private int getY(int depth, double lat) {
+        int t = 0;
+        double inteval = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / (1 << depth);
+        double curr = MapServer.ROOT_ULLAT;
+        while (curr > lat && curr >= MapServer.ROOT_LRLAT + inteval) {
+            curr -= inteval;
+            t += 1;
+        }
+        return Math.max(t - 1, 0);
+    }
+    private double getullat(int depth, int y) {
+        double inteval = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / (1 << depth);
+        return MapServer.ROOT_ULLAT - y * inteval;
+    }
+    private double getullon(int depth, int x) {
+        double inteval = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / (1 << depth);
+        return MapServer.ROOT_ULLON + x * inteval;
+    }
+    private double getlrlat(int depth, int y) {
+        double inteval = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / (1 << depth);
+        return MapServer.ROOT_ULLAT - (y + 1) * inteval;
+    }
+    private double getlrlon(int depth, int x) {
+        double inteval = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / (1 << depth);
+        return MapServer.ROOT_ULLON + (x + 1) * inteval;
+    }
 }

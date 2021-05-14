@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,6 +20,45 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
+    public static class Node {
+        long id;
+        double lat;
+        double lon;
+        double distance;
+        double heuristic;
+        String name;
+        Set<Long> adjs;
+        Set<Long> wayIds;
+        public Node(long id, double lat, double lon) {
+            this.id = id;
+            this.lat = lat;
+            this.lon = lon;
+            distance = 0;
+            heuristic = 0;
+            name = "";
+            adjs = new HashSet<>();
+            wayIds = new HashSet<>();
+        }
+    }
+    public static class Way {
+        long id;
+        boolean isValid;
+        String name;
+        String highway;
+        List<Long> nodeIds;
+        //Map<String, String> extraInfo;
+        public Way(long id) {
+            this.id = id;
+            isValid = false;
+            name = "";
+            highway = "";
+            nodeIds = new LinkedList<>();
+            //extraInfo = new HashMap<>();
+        }
+    }
+
+    public Map<Long, Node> nodes = new LinkedHashMap<>();
+    public Map<Long, Way> ways = new LinkedHashMap<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -56,8 +95,14 @@ public class GraphDB {
      *  While this does not guarantee that any two nodes in the remaining graph are connected,
      *  we can reasonably assume this since typically roads are connected.
      */
-    private void clean() {
+    private void clean() { //may have bugs
         // TODO: Your code here.
+        /*for (long i : nodes.keySet()) {
+            if (nodes.get(i).wayIds.isEmpty()) {
+                nodes.remove(i);
+            }
+        }*/
+        nodes.entrySet().removeIf(item -> item.getValue().adjs.isEmpty());
     }
 
     /**
@@ -66,7 +111,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return nodes.keySet();
     }
 
     /**
@@ -75,7 +120,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return nodes.get(v).adjs;
     }
 
     /**
@@ -136,7 +181,16 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        long minId = 0L;
+        double minDist = Double.POSITIVE_INFINITY;
+        for (long i : nodes.keySet()) {
+            double d = distance(lon, lat, lon(i), lat(i));
+            if (d < minDist) {
+                minDist = d;
+                minId = i;
+            }
+        }
+        return minId;
     }
 
     /**
@@ -145,7 +199,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return nodes.get(v).lon;
     }
 
     /**
@@ -154,6 +208,29 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return nodes.get(v).lat;
+    }
+
+    private class NodeComparator implements Comparator<Long> {
+
+        @Override
+        public int compare(Long o1, Long o2) {
+            return Double.compare(nodes.get(o1).distance + nodes.get(o1).heuristic, nodes.get(o2).distance + nodes.get(o2).heuristic);
+        }
+    }
+    public Comparator<Long> getComparator() {
+        return new NodeComparator();
+    }
+    double distance(long v) {
+        return nodes.get(v).distance;
+    }
+    void changeDistance(long v, double p) {
+        nodes.get(v).distance = p;
+    }
+    double heuristic(long v) {
+        return nodes.get(v).heuristic;
+    }
+    void changeHeuristic(long v, double p) {
+        nodes.get(v).heuristic = p;
     }
 }

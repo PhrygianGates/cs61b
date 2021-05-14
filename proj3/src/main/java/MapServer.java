@@ -305,7 +305,7 @@ public class MapServer {
     }
 
     /**
-     * Validates that Rasterer has returned a result that can be rendered.
+     * Validates that Rasterer has returned a result that can be rendered.s
      * @param rip : Parameters provided by the rasterer
      */
     private static boolean validateRasteredImgParams(Map<String, Object> rip) {
