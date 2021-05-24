@@ -4,9 +4,9 @@ import java.awt.*;
 
 public class SeamCarver {
     Picture picture;
-    int width;
-    int height;
-    boolean isVertical;
+    private int width;
+    private int height;
+    private boolean isVertical;
     public SeamCarver(Picture picture) {
         this.picture = picture;
         width = picture().width();
