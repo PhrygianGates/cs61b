@@ -17,7 +17,7 @@ public class SeamCarver {
         isVertical = !isVertical;
     }
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
     public int width() {
         if (isVertical) {
